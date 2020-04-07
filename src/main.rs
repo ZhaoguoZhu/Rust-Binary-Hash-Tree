@@ -1,3 +1,4 @@
+/*
 use std::io;
 
 fn main() {
@@ -213,3 +214,4 @@ fn print_vector(xor: &Vec<String>) {
     }
     println!("");
 }
+*/
