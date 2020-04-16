@@ -1,3 +1,164 @@
+
+use std::io;
+
+fn main() {
+
+
+    let mut input = String::new();
+    println!("type in number of words");
+    io::stdin().read_line(&mut input )
+        .expect("Failed to read line");
+
+    let input: u32 = input.trim().parse()
+        .expect("Please type a number!");
+    println!("You entered: {}", input);
+
+    let mut v = create_random_vector(input);
+    print_vector(&v);
+
+    let mut v2 = copy_shuffle(& v);
+
+
+    hm_tree_wrapper(&v);
+
+    let mut tam = String::new();
+    println!("type in index of word to be changed");
+    io::stdin().read_line(&mut tam )
+        .expect("Failed to read line");
+
+    let tam: usize = tam.trim().parse()
+        .expect("Please type a number!");
+    println!("You entered: {}", tam);
+    v2[tam] = "changed".to_string();
+    hm_tree_wrapper(&v);
+    hm_tree_wrapper(&v2);
+
+/*
+let mut v1 = vec![String::from("Bifesta"),String::from("Citron"), String::from("Collection"),String::from("Kirby")];
+
+tamper(&mut v1, 0);
+
+print_vector(& v1);
+
+let mut v2 = copy_shuffle(& v1);
+
+print_vector(& v1);
+print_vector(& v2);
+
+*/
+
+}
+
+pub fn shuffle<T>(vec: &mut [T]) {
+    // ... contents removed: it shuffles the vector in place
+    // ... so needs a mutable vector
+}
+
+pub fn copy_shuffle<T: Clone>(vec: &Vec<T>) -> Vec<T> {
+    let mut vec = vec.clone();
+    shuffle(&mut vec);
+    vec
+}
+
+fn tamper(xor: &mut Vec<String>, i: usize){
+
+    let num = xor.len();
+    for n in 0..num {
+        if n == i {
+            xor[n] = "changed".to_string();
+        }
+    }
+}
+
+fn hm_tree_wrapper(xor: &Vec<String>) {
+    let mut temp = to_hash(xor);
+    hm_tree(&temp);
+    print_vector(xor);
+}
+
+fn to_hash(xor: &Vec<String>) -> Vec<String>{
+    let num = xor.len();
+    let mut trial: Vec<String> = Vec::new();
+    for n in 0..num {
+        trial.push(primitive_hash_fn(&xor[n]));
+
+    }
+    trial
+}
+
+fn to_hash_con(xor: &Vec<String>) -> Vec<String>{
+    let num = xor.len();
+    let mut trial: Vec<String> = Vec::new();
+    let mut n = 0;
+    while n < num {
+        let mut temp = String::new();
+        temp.push_str(&xor[n]);
+        temp.push_str(&xor[n+1]);
+        trial.push(primitive_hash_fn(&temp));
+        n = n + 2;
+    }
+    trial
+}
+
+fn hm_tree(xor: &Vec<String>) {
+    let n = xor.len();
+    if n > 1 {
+        let temp = to_hash_con(xor);
+        hm_tree(&temp);
+        print_vector(xor);
+    } else {
+        print!("The root hash:  ");
+        print_vector(xor);
+    }
+}
+
+fn primitive_hash_fn(input: &str) -> String {
+    let mut buf = String::with_capacity(4);
+    let mut holder = 0;
+    let mut ind = 0;
+    for c in input.chars() {
+        let x = c.to_digit(36);
+        ind += 1;
+        match x {
+            None => (),
+            Some(temp) => holder = holder + (temp * ind),
+            }
+   }
+   holder = holder % 2099;
+   let temp = holder.to_string();
+   buf.push_str(&temp);
+   while buf.len() < 4 {
+      buf.push('z');
+   }
+   buf
+}
+
+fn create_random_vector(input: u32) -> Vec<String> {
+    let mut trial: Vec<String> = Vec::new();
+
+    for n in 0..input {
+        let mut temp = String::new();
+        println!("type in word");
+        io::stdin().read_line(&mut temp )
+            .expect("Failed to read line");
+        trial.push(temp.trim().to_string());
+    }
+    trial
+}
+
+fn print_vector(xor: &Vec<String>) {
+    let num = xor.len();
+    for n in 0..num {
+        print!("{} ",xor[n]);
+    }
+    println!("");
+}
+
+
+
+// Struct Attempt
+
+/*
 use std::io;
 
 fn main() {
@@ -259,3 +420,4 @@ fn print_vector(xor: &Vec<String>) {
     }
     println!("");
 }
+*/
